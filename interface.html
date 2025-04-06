@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <title>Remix</title>
+    <style>
+        body{
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            text-align: center;
+            background: lightskyblue;
+            color: black;
+            padding: 50px;
+        }
+        h1{
+            font-size: 75px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: darkblue;
+        }
+        .containers{
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .container, .beatContainer, .speedContainer, .durationContainer{
+            background: lightyellow;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 250px;
+            text-align: center;
+        }
+        h2{
+            font-weight: 600;
+        }
+        #fichier{
+            display: none;
+        }
+        .upload{
+            display: inline-block;
+            padding: 12px 20px;
+            background: lightgray;
+            color: black;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .upload:hover{
+            background: gray;
+        }
+        #file{
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: gray;
+        }
+        .beat{
+            display: block;
+            margin: 10px auto;
+            padding: 12px;
+            width: 200px;
+            background: white;
+            color: black;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid black;
+        }
+        .beat:hover{
+            background: gray;
+            color: white;
+        }
+        .slider{
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="range"]{
+            width: 100%;
+            margin-top: 10px;
+        }
+        .sliderVal{
+            position: absolute;
+            top: -25px;
+            background: black;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+        .waves{
+            margin-top: 40px;
+        }
+        .waveContainer{
+            width: 80%;
+            margin: 20px auto;
+            padding: 10px;
+            background: lightyellow;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .wave{
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>REMIX</h1>
+    <div class="containers">
+        <div class="container">
+            <h2>Sélectionnez un fichier WAV</h2>
+            <label for="fichier" class="upload">📂 Choisir un fichier</label>
+            <input type="file" id="fichier" accept=".wav">
+            <p id="file">Aucun fichier sélectionné</p>
+        </div>
+        <div class="beatContainer">
+            <h2>Choisissez un beat</h2>
+            <button class="beat" onclick="playBeat('beat1.wav')">🎵 Beat 1</button>
+            <button class="beat" onclick="playBeat('beat2.wav')">🎵 Beat 2</button>
+            <button class="beat" onclick="playBeat('beat3.wav')">🎵 Beat 3</button>
+            <audio id="audio" controls style="display: none;"></audio>
+        </div>
+        <div class="speedContainer">
+            <h2>Vitesse d'apparition des beats</h2>
+            <div class="slider">
+                <span class="sliderVal" id="speedNum">10</span>
+                <input type="range" id="speed" min="1" max="20" step="1" value="10">
+            </div>
+            <p>Vitesse actuelle: <span id="speedVal">10</span></p>
+        </div>
+        <div class="durationContainer">
+            <h2>Durée d'atténuation du volume</h2>
+            <div class="slider">
+                <span class="sliderVal" id="durationNum">0.5</span>
+                <input type="range" id="duration" min="0" max="0.5" step="0.1" value="0.2">
+            </div>
+            <p>Durée actuelle: <span id="durationVal">0.2</span> secondes</p>
+        </div>
+    </div>
+    <div class="waves">
+        <div class="waveContainer">
+            <p class="wave">Forme d'onde de la mélodie</p>
+            <div id="waveMelody"></div>
+        </div>
+        <div class="waveContainer">
+            <p class="wave">Forme d'onde du beat</p>
+            <div id="waveBeat"></div>
+        </div>
+        <div class="waveContainer">
+            <p class="wave">Forme d'onde de l'atténuation</p>
+            <div id="waveAttenuation"></div>
+        </div>
+    </div>
+
+    <script>
+        let wavesurferMelody = WaveSurfer.create({
+            container: '#waveMelody',
+            waveColor: 'blue',
+            progressColor: 'darkblue',
+            barWidth: 3,
+            responsive: true,
+            height: 80
+        });
+
+        let wavesurferBeat = WaveSurfer.create({
+            container: '#waveBeat',
+            waveColor: 'green',
+            progressColor: 'darkgreen',
+            barWidth: 3,
+            responsive: true,
+            height: 80
+        });
+
+        let wavesurferAttenuation = WaveSurfer.create({
+            container: '#waveAttenuation',
+            waveColor: 'red',
+            progressColor: 'darkred',
+            barWidth: 3,
+            responsive: true,
+            height: 80
+        });
+
+        function afficherNomFichier(event){
+    let fichier = event.target.files[0];
+    if (fichier) {
+        document.getElementById("file").textContent = "Fichier sélectionné: " + fichier.name;
+        
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            wavesurferMelody.load(e.target.result);
+        };
+        reader.readAsDataURL(fichier);
+    }
+}
+
+        function playBeat(fichier){
+            let beat = document.getElementById("audio");
+            beat.src = fichier;
+            beat.style.display = "block";
+            beat.play();
+        }
+
+        function updateSliderValue(slider, num, display){
+            slider.addEventListener("input", function (){
+                let val = slider.value;
+                num.textContent = val;
+                num.style.left = `${(slider.value - slider.min) / (slider.max - slider.min) * 100}%`;
+                num.style.display = "block";
+                display.textContent = val;
+            });
+
+            slider.addEventListener("mouseleave", function (){
+                num.style.display = "none";
+            });
+        }
+
+        function updateAttenuationWaveform(){
+            let duration = document.getElementById("duration").value;
+            let sampleRate = 100;
+            let waveData = new Array(sampleRate).fill(0).map((_, i) => {
+                return Math.exp(-i / (sampleRate * duration));
+            });
+
+            wavesurferAttenuation.loadBlob(new Blob([new Float32Array(waveData).buffer]));
+        }
+
+        document.getElementById("fichier").addEventListener("change", afficherNomFichier);
+        updateSliderValue(document.getElementById("speed"), document.getElementById("speedNum"), document.getElementById("speedVal"));
+        updateSliderValue(document.getElementById("duration"), document.getElementById("durationNum"), document.getElementById("durationVal"));
+        document.getElementById("duration").addEventListener("input", updateAttenuationWaveform);
+    </script>
+</body>
+</html>
