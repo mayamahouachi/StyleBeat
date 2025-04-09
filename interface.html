@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://unpkg.com/wavesurfer.js"></script>
-    <title>Style beat</title>
+    <title>Remix Studio</title>
     <style>
         /* Importation d'une police moderne */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
@@ -36,7 +36,7 @@
             margin: 0 auto;
         }
 
-        .container, .beatContainer, .speedContainer, .durationContainer {
+        .container, .beatContainer {
             background: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 20px;
@@ -46,7 +46,7 @@
             transition: transform 0.3s ease;
         }
 
-        .container:hover, .beatContainer:hover, .speedContainer:hover, .durationContainer:hover {
+        .container:hover, .beatContainer:hover {
             transform: translateY(-5px);
         }
 
@@ -106,30 +106,6 @@
             transform: scale(1.1);
         }
 
-        .slider {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            margin-top: 15px;
-            accent-color: #3498db; /* Couleur du slider */
-        }
-
-        .sliderVal {
-            position: absolute;
-            top: -30px;
-            background: #2c3e50;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            display: none;
-        }
-
         .waves {
             margin-top: 50px;
         }
@@ -182,7 +158,7 @@
     </style>
 </head>
 <body>
-    <h1>Style beat</h1>
+    <h1>REMIX STUDIO</h1>
     <div class="containers">
         <div class="container">
             <h2>Sélectionnez un fichier WAV</h2>
@@ -194,62 +170,49 @@
             <h2>Choisissez un beat</h2>
             <div class="beatContainerButtons">
                 <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-Bdrum1.wav')" title="80s-Bdrum1">🥁</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-COWBELL1.wav')" title="80s-COWBELL1">🛎️</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-CRASH1.wav')" title="80s-CRASH1">💥</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-CRASH2.wav')" title="80s-CRASH2">💥</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-CRASH3.wav')" title="80s-CRASH3">💥</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-HHCLOSE1.wav')" title="80s-HHCLOSE1">🚪</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-HHCLOSE2.wav')" title="80s-HHCLOSE2">🚪</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-HHOPEN2.wav')" title="80s-HHOPEN2">🚪</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-HICONGA.wav')" title="80s-HICONGA">🔊</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-LOWCONGA.wav')" title="80s-LOWCONGA">🔊</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-MIDCONGA.wav')" title="80s-MIDCONGA">🔊</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-SNARE1.wav')" title="80s-SNARE1">🎯</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-TAMB1.wav')" title="80s-TAMB1">🎶</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-TOM1.wav')" title="80s-TOM1">🥁</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-TOM2.wav')" title="80s-TOM2">🥁</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-TOM3.wav')" title="80s-TOM3">🥁</button>
-                <button class="beat" onclick="playBeat('selected_beats/80s-TOM5.wav')" title="80s-TOM5">🥁</button>
-                <button class="beat" onclick="playBeat('selected_beats/dog.wav')" title="dog">🐶</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-COWBELL1.wav')" title="80s-COWBELL1">🛎️</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-CRASH1.wav')" title="80s-CRASH1">💥</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-CRASH2.wav')" title="80s-CRASH2">💥</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-CRASH3.wav')" title="80s-CRASH3">💥</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-HHCLOSE1.wav')" title="80s-HHCLOSE1">🚪</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-HHCLOSE2.wav')" title="80s-HHCLOSE2">🚪</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-HHOPEN2.wav')" title="80s-HHOPEN2">🚪</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-HICONGA.wav')" title="80s-HICONGA">🔊</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-LOWCONGA.wav')" title="80s-LOWCONGA">🔊</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-MIDCONGA.wav')" title="80s-MIDCONGA">🔊</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-SNARE1.wav')" title="80s-SNARE1">🎯</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-TAMB1.wav')" title="80s-TAMB1">🎶</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-TOM1.wav')" title="80s-TOM1">🥁</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-TOM2.wav')" title="80s-TOM2">🥁</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-TOM3.wav')" title="80s-TOM3">🥁</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/80s-TOM5.wav')" title="80s-TOM5">🥁</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/dog.wav')" title="dog">🐶</button>
                 <button class="beat" onclick="playBeat('audio_processing/selected_beats/kwak.wav')" title="kwak">🦆</button>
-                <button class="beat" onclick="playBeat('selected_beats/TechDHitA-Hat03.wav')" title="TechDHitA-Hat03">👒</button>
-                <button class="beat" onclick="playBeat('selected_beats/TechDHitA-Kick03.wav')" title="TechDHitA-Kick03">👢</button>
-                <button class="beat" onclick="playBeat('selected_beats/TechDHitA-Perc01.wav')" title="TechDHitA-Perc01">🔔</button>
-                <button class="beat" onclick="playBeat('selected_beats/TechDHitA-Perc02.wav')" title="TechDHitA-Perc02">🔔</button>
-                <button class="beat" onclick="playBeat('selected_beats/TechDHitBfx-03.wav')" title="TechDHitBfx-03">📣</button>
-                <button class="beat" onclick="playBeat('selected_beats/TechDHitCb-02.wav')" title="TechDHitCb-02">📢</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/TechDHitA-Hat03.wav')" title="TechDHitA-Hat03">👒</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/TechDHitA-Kick03.wav')" title="TechDHitA-Kick03">👢</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/TechDHitA-Perc01.wav')" title="TechDHitA-Perc01">🔔</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/TechDHitA-Perc02.wav')" title="TechDHitA-Perc02">🔔</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/TechDHitBfx-03.wav')" title="TechDHitBfx-03">📣</button>
+                <button class="beat" onclick="playBeat('audio_processing/selected_beats/TechDHitCb-02.wav')" title="TechDHitCb-02">📢</button>
             </div>
             <audio id="audio" controls style="display: none;"></audio>
-        </div>
-        <div class="speedContainer">
-            <h2>Vitesse des beats</h2>
-            <div class="slider">
-                <span class="sliderVal" id="speedNum">10</span>
-                <input type="range" id="speed" min="1" max="20" step="1" value="10">
-            </div>
-            <p>Vitesse actuelle : <span id="speedVal">10</span></p>
-        </div>
-        <div class="durationContainer">
-            <h2>Durée d'atténuation</h2>
-            <div class="slider">
-                <span class="sliderVal" id="durationNum">0.2</span>
-                <input type="range" id="duration" min="0" max="0.5" step="0.1" value="0.2">
-            </div>
-            <p>Durée actuelle : <span id="durationVal">0.2</span> s</p>
         </div>
     </div>
     <div class="waves">
         <div class="waveContainer">
             <p class="wave">Mélodie</p>
             <div id="waveMelody"></div>
+            <button class="playButton" onclick="playAudio('melody')">🎶</button>
         </div>
         <div class="waveContainer">
             <p class="wave">Beat</p>
             <div id="waveBeat"></div>
+            <button class="playButton" onclick="playAudio('beat')">🎶</button>
         </div>
-        <div class="waveContainer">
-            <p class="wave">Atténuation</p>
-            <div id="waveAttenuation"></div>
+        <div class="waveContainer" id="resultWaveContainer" style="display: none;">
+            <p class="wave">Résultat</p>
+            <div id="waveResultat"></div>
+            <button class="playButton" onclick="playAudio('resultat')">🎶</button>
         </div>
     </div>
     <div>
@@ -257,6 +220,7 @@
     </div>
 
     <script>
+
         let wavesurferMelody = WaveSurfer.create({
             container: '#waveMelody',
             waveColor: '#3498db',
@@ -275,8 +239,8 @@
             height: 100
         });
 
-        let wavesurferAttenuation = WaveSurfer.create({
-            container: '#waveAttenuation',
+        let wavesurferResultat = WaveSurfer.create({
+            container: '#waveResultat',
             waveColor: '#e74c3c',
             progressColor: '#c0392b',
             barWidth: 3,
@@ -284,11 +248,25 @@
             height: 100
         });
 
+        wavesurferBeat.load("audio_processing/results/temp_kick_loop.wav");
+        wavesurferResultat.load("audio_processing/results/resultat_kicks_synchronise.wav");
+        let userMelodyFile = null;
+
+        function playAudio(type) {
+            if (type === 'melody') {
+                wavesurferMelody.playPause();
+            } else if (type === 'beat') {
+                wavesurferBeat.playPause();
+            } else if (type === 'resultat') {
+                wavesurferResultat.playPause();
+            }
+        }
+
         function afficherNomFichier(event) {
-            let fichier = event.target.files[0];
+            const fichier = event.target.files[0];
             if (fichier) {
                 document.getElementById("file").textContent = "Fichier sélectionné : " + fichier.name;
-                let reader = new FileReader();
+                const reader = new FileReader();
                 reader.onload = function (e) {
                     wavesurferMelody.load(e.target.result);
                 };
@@ -317,7 +295,7 @@
             });
         }
 
-        function updateAttenuationWaveform() {
+        function updateResultatWaveform() {
             let duration = document.getElementById("duration").value;
             let sampleRate = 100;
             let waveData = new Array(sampleRate).fill(0).map((_, i) => {
@@ -327,14 +305,13 @@
         }
 
         async function createRemix() {
-            // Placeholder pour la logique de remix (à implémenter côté serveur ou avec une bibliothèque audio)
             console.log("Création du remix...");
+            document.getElementById("resultWaveContainer").style.display = "block";
+
+            wavesurferResultat.load("audio_processing/results/resultat_kicks_synchronise.wav");
         }
 
         document.getElementById("fichier").addEventListener("change", afficherNomFichier);
-        updateSliderValue(document.getElementById("speed"), document.getElementById("speedNum"), document.getElementById("speedVal"));
-        updateSliderValue(document.getElementById("duration"), document.getElementById("durationNum"), document.getElementById("durationVal"));
-        document.getElementById("duration").addEventListener("input", updateAttenuationWaveform);
     </script>
 </body>
 </html>
