@@ -155,10 +155,39 @@
             width: 100%;
             max-width: 400px;
         }
+
+        .waveRow {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .playButton {
+            font-size: 36px;
+            background-color: #ffffff;
+            border: 2px solid #2980b9;
+            color: #2980b9;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .playButton:hover {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .waveBox {
+            flex: 1;
+        }
+
     </style>
 </head>
 <body>
-    <h1>REMIX STUDIO</h1>
+    <h1>STYLE BEAT</h1>
     <div class="containers">
         <div class="container">
             <h2>Sélectionnez un fichier WAV</h2>
@@ -201,19 +230,26 @@
     <div class="waves">
         <div class="waveContainer">
             <p class="wave">Mélodie</p>
-            <div id="waveMelody"></div>
-            <button class="playButton" onclick="playAudio('melody')">🎶</button>
-        </div>
+            <div class="waveRow">
+                <button class="playButton" id="btnMelody" onclick="playAudio('melody')">▶️</button>
+                <div id="waveMelody" class="waveBox"></div>
+            </div>
+        </div>        
         <div class="waveContainer">
             <p class="wave">Beat</p>
-            <div id="waveBeat"></div>
-            <button class="playButton" onclick="playAudio('beat')">🎶</button>
+            <div class="waveRow">
+                <button class="playButton" id="btnBeat" onclick="playAudio('beat')">▶️</button>
+                <div id="waveBeat" class="waveBox"></div>
+            </div>
         </div>
         <div class="waveContainer" id="resultWaveContainer" style="display: none;">
             <p class="wave">Résultat</p>
-            <div id="waveResultat"></div>
-            <button class="playButton" onclick="playAudio('resultat')">🎶</button>
+            <div class="waveRow">
+                <button class="playButton" id="btnResultat" onclick="playAudio('resultat')">▶️</button>
+                <div id="waveResultat" class="waveBox"></div>
+            </div>
         </div>
+        
     </div>
     <div>
         <button class="upload" id="remixButton" onclick="createRemix()">🎛️ Créer Remix</button>
@@ -253,14 +289,33 @@
         let userMelodyFile = null;
 
         function playAudio(type) {
+            let ws;
+            let button;
+
             if (type === 'melody') {
-                wavesurferMelody.playPause();
+                ws = wavesurferMelody;
+                button = document.getElementById('btnMelody');
             } else if (type === 'beat') {
-                wavesurferBeat.playPause();
+                ws = wavesurferBeat;
+                button = document.getElementById('btnBeat');
             } else if (type === 'resultat') {
-                wavesurferResultat.playPause();
+                ws = wavesurferResultat;
+                button = document.getElementById('btnResultat');
             }
+
+            if (ws.isPlaying()) {
+                ws.pause();
+                button.textContent = '▶️';
+            } else {
+                ws.play();
+                button.textContent = '⏸️';
+            }
+
+            ws.on('finish', () => {
+                button.textContent = '▶️';
+            });
         }
+
 
         function afficherNomFichier(event) {
             const fichier = event.target.files[0];
