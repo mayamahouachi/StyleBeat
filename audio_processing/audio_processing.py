@@ -45,7 +45,7 @@ def apply_envelope(y_chanson: np.ndarray, envelope: np.ndarray, sr: int, temp_pa
     sf.write(temp_path, y_chanson_attenuee, sr, subtype='PCM_16')
     return AudioSegment.from_file(temp_path)
 
-def create_kick_loop(chanson: AudioSegment, kick: AudioSegment, beat_times: np.ndarray, output_path: str):
+def create_kick_loop(chanson: AudioSegment, kick: AudioSegment, beat_times: np.ndarray, output_path: str, sr: int):
     duree_chanson_ms = len(chanson)
     kick_loop = AudioSegment.silent(duration=duree_chanson_ms)
     for beat_time in beat_times:
@@ -53,37 +53,49 @@ def create_kick_loop(chanson: AudioSegment, kick: AudioSegment, beat_times: np.n
         kick_loop = kick_loop.overlay(kick, position=pos_ms)
     kick_loop.export(output_path, format="wav")
 
-    return kick_loop
+    # Convertir kick_loop en tableau numpy pour generer_plots
+    y_kick_loop, _ = librosa.load(output_path, sr=sr)
+    return kick_loop, y_kick_loop
+
+
 
 def generate_final_song(chanson_attenuee: AudioSegment, kick_loop: AudioSegment, output_path: str, gain_boost: int = 3):
-    chanson_finale = chanson_attenuee.overlay(kick_loop)
-    chanson_finale = chanson_finale + gain_boost
-    chanson_finale.export(output_path, format="wav")
-    y_chanson_finale, sr = librosa.load(output_path)
-    return chanson_finale, y_chanson_finale, sr
+     chanson_finale = chanson_attenuee.overlay(kick_loop)
+     chanson_finale = chanson_finale + gain_boost
+     chanson_finale.export(output_path, format="wav")
+     y_chanson_finale, sr = librosa.load(output_path)
+     return chanson_finale, y_chanson_finale, sr
+     return kick_loop
+
+
 
 def generate_plots(y_chanson: np.ndarray, sr: int, beat_times: np.ndarray, envelope: np.ndarray, 
-                   kick_loop: AudioSegment, y_chanson_finale: np.ndarray, plot_path: str, attenuation_duration: float):
+                   kick_loop: AudioSegment, y_kick_loop: np.ndarray, y_chanson_finale: np.ndarray, 
+                   plot_path: str, attenuation_duration: float):
     plt.figure(figsize=(15, 10))
 
+    # Chanson originale
     plt.subplot(4, 1, 1)
     plt.plot(np.linspace(0, len(y_chanson) / sr, len(y_chanson)), y_chanson, alpha=0.3, color="blue")
     plt.title("Chanson originale")
     for beat_time in beat_times:
         plt.axvline(x=beat_time, color="green", linestyle="--", alpha=0.7)
 
+    # Boucle de kicks
     plt.subplot(4, 1, 2)
     plt.plot(np.linspace(0, len(y_kick_loop) / sr, len(y_kick_loop)), y_kick_loop, color="orange")
     plt.title("Boucle de kicks")
     for beat_time in beat_times:
         plt.axvline(x=beat_time, color="green", linestyle="--", alpha=0.7)
 
+    #  Enveloppe
     plt.subplot(4, 1, 3)
     plt.plot(np.linspace(0, len(y_chanson) / sr, len(y_chanson)), envelope, color="red", linewidth=2)
     plt.title(f"Enveloppe appliquée (atténuation {attenuation_duration}s)")
     for beat_time in beat_times:
         plt.axvline(x=beat_time, color="green", linestyle="--", alpha=0.7)
 
+    # Chanson finale
     plt.subplot(4, 1, 4)
     plt.plot(np.linspace(0, len(y_chanson_finale) / sr, len(y_chanson_finale)), y_chanson_finale, alpha=0.3, color="purple")
     plt.title("Chanson finale")

@@ -25,11 +25,10 @@ async def upload_and_process_song(
     
     # Chemins dans le dossier results
     results_dir = "results"
-    output_path = os.path.join(results_dir, "resultat_kicks_synchronise.wav")
-    kick_path = os.path.join(results_dir, "temp_kick_loop.wav")
+    output_path = os.path.join(results_dir, "resultat_final.wav")
+    kick_path = os.path.join(results_dir, "kick_loop.wav")
     plot_path = os.path.join(results_dir, "audio_plots.png")
 
-    # Créer le dossier results s'il n'existe pas
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
 
@@ -44,10 +43,11 @@ async def upload_and_process_song(
     beat_times = detect_beats(y_chanson, sr)
     envelope = generate_envelope(len(y_chanson), beat_times, sr, kick, attenuation_duration)
     chanson_attenuee = apply_envelope(y_chanson, envelope, sr, temp_attenuee_path)
-    kick_loop = create_kick_loop(chanson, kick, beat_times,"results/temp_kick_loop.wav")
+    # Appel corrigé avec sr et dépaquetage du tuple
+    kick_loop, y_kick_loop = create_kick_loop(chanson, kick, beat_times, kick_path, sr)
     chanson_finale, y_chanson_finale, sr_final = generate_final_song(chanson_attenuee, kick_loop, output_path, gain_boost=3)
-    generate_plots(y_chanson, sr, beat_times, envelope, kick_loop, y_chanson_finale, plot_path, attenuation_duration)
-
+    # Passage de y_kick_loop à generate_plots
+    generate_plots(y_chanson, sr, beat_times, envelope, kick_loop, y_kick_loop, y_chanson_finale, plot_path, attenuation_duration)
     # Nettoyage des fichiers temporaires
     os.remove(temp_input_path)
     os.remove(temp_attenuee_path)
