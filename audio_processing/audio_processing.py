@@ -45,12 +45,14 @@ def apply_envelope(y_chanson: np.ndarray, envelope: np.ndarray, sr: int, temp_pa
     sf.write(temp_path, y_chanson_attenuee, sr, subtype='PCM_16')
     return AudioSegment.from_file(temp_path)
 
-def create_kick_loop(chanson: AudioSegment, kick: AudioSegment, beat_times: np.ndarray):
+def create_kick_loop(chanson: AudioSegment, kick: AudioSegment, beat_times: np.ndarray, output_path: str):
     duree_chanson_ms = len(chanson)
     kick_loop = AudioSegment.silent(duration=duree_chanson_ms)
     for beat_time in beat_times:
         pos_ms = int(beat_time * 1000)
         kick_loop = kick_loop.overlay(kick, position=pos_ms)
+    kick_loop.export(output_path, format="wav")
+
     return kick_loop
 
 def generate_final_song(chanson_attenuee: AudioSegment, kick_loop: AudioSegment, output_path: str, gain_boost: int = 3):
@@ -70,8 +72,6 @@ def generate_plots(y_chanson: np.ndarray, sr: int, beat_times: np.ndarray, envel
     for beat_time in beat_times:
         plt.axvline(x=beat_time, color="green", linestyle="--", alpha=0.7)
 
-    kick_loop.export("temp_kick_loop.wav", format="wav")
-    y_kick_loop, _ = librosa.load("temp_kick_loop.wav", sr=sr)
     plt.subplot(4, 1, 2)
     plt.plot(np.linspace(0, len(y_kick_loop) / sr, len(y_kick_loop)), y_kick_loop, color="orange")
     plt.title("Boucle de kicks")

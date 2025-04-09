@@ -1,12 +1,11 @@
-
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import StreamingResponse
 import os
+import shutil
 from audio_processing import (
     load_audio_files, detect_beats, generate_envelope, apply_envelope,
     create_kick_loop, generate_final_song, generate_plots
 )
-from utils import save_uploaded_file, create_zip
+from utils import save_uploaded_file
 
 app = FastAPI()
 
@@ -20,35 +19,40 @@ async def upload_and_process_song(
     kick_file: str = "selected_beats/TechDHitA-Perc01.wav",
     attenuation_duration: float = 0.1
 ):
+    # Chemins temporaires
     temp_input_path = "temp_uploaded_song.wav"
     temp_attenuee_path = "temp_chanson_attenuee.wav"
-    output_path = "resultat_kicks_synchronise.wav"
-    plot_path = "audio_plots.png"
-    kick_path = "temp_kick_loop.wav"
+    
+    # Chemins dans le dossier results
+    results_dir = "results"
+    output_path = os.path.join(results_dir, "resultat_kicks_synchronise.wav")
+    kick_path = os.path.join(results_dir, "temp_kick_loop.wav")
+    plot_path = os.path.join(results_dir, "audio_plots.png")
+
+    # Créer le dossier results s'il n'existe pas
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
+
     save_uploaded_file(file, temp_input_path)
 
+    # Vérifier l'existence du fichier kick
     if not os.path.exists(kick_file):
         raise FileNotFoundError(f"Le fichier kick {kick_file} n'est pas trouvé dans le répertoire.")
 
+    # Traitement audio
     chanson, kick, y_chanson, y_kick, sr = load_audio_files(temp_input_path, kick_file)
     beat_times = detect_beats(y_chanson, sr)
     envelope = generate_envelope(len(y_chanson), beat_times, sr, kick, attenuation_duration)
     chanson_attenuee = apply_envelope(y_chanson, envelope, sr, temp_attenuee_path)
-    kick_loop = create_kick_loop(chanson, kick, beat_times)
+    kick_loop = create_kick_loop(chanson, kick, beat_times,"results/temp_kick_loop.wav")
     chanson_finale, y_chanson_finale, sr_final = generate_final_song(chanson_attenuee, kick_loop, output_path, gain_boost=3)
     generate_plots(y_chanson, sr, beat_times, envelope, kick_loop, y_chanson_finale, plot_path, attenuation_duration)
-    zip_buffer = create_zip(output_path,kick_path, plot_path)
 
-     # Cleaning
+    # Nettoyage des fichiers temporaires
     os.remove(temp_input_path)
     os.remove(temp_attenuee_path)
-    os.remove(output_path)
-    os.remove(plot_path)
-    os.remove(kick_path)
-    return StreamingResponse(
-        zip_buffer,
-        media_type="application/zip",
-        headers={"Content-Disposition": "attachment; filename=audio_and_plots.zip"}
-    )
+
+    # Les fichiers output_path, kick_path et plot_path sont maintenant dans results/
+    return {"message": "Traitement terminé avec succès", "results_dir": results_dir}
 
 # Lancer avec : uvicorn app:app --reload
