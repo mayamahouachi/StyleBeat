@@ -13,7 +13,7 @@ from utils import save_uploaded_file
 app = FastAPI()
 
 app.mount("/results", StaticFiles(directory="results"), name="results")
-app.mount("/selected_beats", StaticFiles(directory="selected_beats"), name="beats")
+app.mount("/selected_beats_processed", StaticFiles(directory="selected_beats_processed"), name="beats")
 
 # Configuration CORS
 app.add_middleware(
@@ -40,7 +40,7 @@ async def upload_and_process_song(
     file: UploadFile = File(...),
     attenuation_duration: float = 0.1
 ):
-    kick_file = "selected_beats/" + kick_name
+    kick_file = "selected_beats_processed/" + kick_name
     print("kick_file : ", kick_file)
     print("POST /upload/ reçu")
     print('Fichier reçu :', file.filename)
