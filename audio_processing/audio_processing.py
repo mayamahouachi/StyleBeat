@@ -59,13 +59,13 @@ def create_kick_loop(chanson: AudioSegment, kick: AudioSegment, beat_times: np.n
 
 
 
-def generate_final_song(chanson_attenuee: AudioSegment, kick_loop: AudioSegment, output_path: str, gain_boost: int = 3):
-     chanson_finale = chanson_attenuee.overlay(kick_loop)
-     chanson_finale = chanson_finale + gain_boost
+def generate_final_song(chanson_attenuee: AudioSegment, kick_loop: AudioSegment, output_path: str, beat_gain: int = 3):
+     kick_loop_boosted = kick_loop + beat_gain
+     chanson_finale = chanson_attenuee.overlay(kick_loop_boosted)
+     chanson_finale = chanson_finale + beat_gain
      chanson_finale.export(output_path, format="wav")
      y_chanson_finale, sr = librosa.load(output_path)
      return chanson_finale, y_chanson_finale, sr
-     return kick_loop
 
 
 
