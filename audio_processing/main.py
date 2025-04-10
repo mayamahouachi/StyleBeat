@@ -14,6 +14,8 @@ app = FastAPI()
 
 # Monter le dossier "results" pour exposer les fichiers générés
 app.mount("/results", StaticFiles(directory="results"), name="results")
+# Monter le dossier "selected_beats" pour exposer les fichiers générés
+app.mount("/selected_beats", StaticFiles(directory="selected_beats"), name="beats")
 
 # Configuration CORS
 app.add_middleware(
